@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Calculator</title>
+</head>
+
+<style>
+	@font-face {
+		font-family: 'digital-clock-font';
+		src: url('digital-7.ttf')
+	}
+	#frame {
+		background-color: #484848;
+		border-radius: 25px;
+		border: 2px solid #33C1FF;
+		width: 400px;
+		height: 500px;
+	}
+	#display {
+		background-color: white;
+		border-radius: 25px;
+		border: 2px solid #33C1FF;
+		width: 360px;
+		height: 70px;
+		margin: auto;
+		margin-top: 20px;
+		text-align: right;
+		padding-right: 10px;
+		line-height: 65px;
+		font-size: 244%;
+		font-family: 'digital-clock-font';
+	}
+	#keypad {
+		width: 364px;
+		margin: auto;
+		margin-top: 20px;
+	}
+	button {
+		width: 80px;
+		height: 80px;
+		margin: 4px;
+		border-radius: 25px;
+		font-family: 'digital-clock-font';
+		font-size: 150%;
+	}
+	button.number-pad {
+		background-color: #484848; 	
+		border: 2px solid #33C1FF;
+		color: #33C1FF;
+	}
+	button.operator {
+		background-color: #33C1FF;
+		border: 2px solid #33C1FF;
+		color: #484848;
+	}
+</style>
+
+<body>
+	<div id='frame'>
+		<div id='display'>Hello</div>
+		<div id='keypad'>
+			<button type='button' class='number-pad' id='1'>1</button>
+			<button type='button' class='number-pad' id='2'>2</button>
+			<button type='button' class='number-pad' id='3'>3</button>
+			<button type='button' class='operator' id='+'>+</button>
+			<button type='button' class='number-pad' id='4'>4</button>
+			<button type='button' class='number-pad' id='5'>5</button>
+			<button type='button' class='number-pad' id='6'>6</button>
+			<button type='button' class='operator' id='-'>-</button>
+			<button type='button' class='number-pad' id='7'>7</button>
+			<button type='button' class='number-pad' id='8'>8</button>
+			<button type='button' class='number-pad' id='9'>9</button>
+			<button type='button' class='operator' id='*'>*</button>
+			<button type='button' class='number-pad' id='clr'>clear</button>
+			<button type='button' class='number-pad' id='0'>0</button>		
+			<button type='button' class='number-pad' id='='>=</button>
+			<button type='button' class='operator' id='/'>/</button>
+		</div>
+	</div>
+	<script>
+		let result = 0;
+		let first = '';
+		let second = '';
+		let op  = '';
+		let display = document.getElementById('display');
+		display.innerHTML = '0';
+		for (i = 0; i <= 9; ++i) {
+			document.getElementById(i.toString(10)).addEventListener('click', function(e) {
+				if (op == '') first = first.concat(e.target.id);
+				else second = second.concat(e.target.id);
+				display.innerHTML = display.innerHTML == '0' ? first : display.innerHTML.concat(e.target.id);
+			});
+		}
+		
+		Array.from(document.getElementsByClassName('operator')).forEach(function(o) {
+			o.addEventListener('click', function(e) {
+				if (first == '') {
+					if (o.id == '-') {
+						first = o.id;
+						display.innerHTML = first;
+					} else if (e.target.id == '*' || o.id == '/') {
+						display.innerHTML = "invalid try again";
+						return;
+					}
+				} else if (op == '') {
+					op = o.id;
+					display.innerHTML = display.innerHTML.concat(e.target.id);
+				} else if (second == '') {
+					if (o.id == '-') {
+						second = o.id;
+						display.innerHTML = display.innerHTML.concat(second);
+					} else if (o.id == '*' || o.id == '/') {
+						display.innerHTML = "bruh what do";
+						first = '';
+						second = '';
+						op = '';
+						return;
+					}
+				} else {
+					calculate();
+					display.innerHTML = display.innerHTML.concat(e.target.id);
+					op = e.target.id;
+				}
+			});
+		});
+		
+		document.getElementById('=').addEventListener('click', function() {
+			if (second == '') {
+				display.innerHTML = first != '' ? first : '0';
+				op = '';
+			} else { 
+				calculate();
+			}
+		});
+		
+		document.getElementById('clr').addEventListener('click', function() {
+			display.innerHTML = 0;
+			first = '';
+			second = '';
+			op = '';
+		});
+
+		function calculate() {
+			i = parseFloat(first);
+			j = parseFloat(second);
+			switch(op) {
+				case '+':
+					result = i + j;
+					break;
+				case '-':
+					result = i - j;
+					break;
+				case '*':
+					result = i * j;
+					break;
+				case '/':
+					if (i) result = i / j;
+					else {
+						display.innerHTML = "try again fool";
+						first = '';
+						second = '';
+						op = '';
+						return;
+					}
+			}
+			display.innerHTML = result.toString(10);
+			first = result;
+			second = '';
+			op = '';
+		}
+
+	</script>
+</body>
+
+	
